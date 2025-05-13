@@ -251,10 +251,9 @@
       });
     });
 
-      document.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-
+      // Function to update elements based on position (x, y values between 0 and 1)
+      function updateElementsPosition(x, y) {
+        // Update background positions
         const sections = document.querySelectorAll('.section');
         sections.forEach(section => {
           section.style.backgroundPosition = `${50 + (1 - x) * 25}% ${50 + (1 - y) * 25}%`;
@@ -265,15 +264,42 @@
           childSection.style.backgroundPosition = `${50 + (1 - x) * 25}% ${50 + (1 - y) * 25}%`;
         });
         
-        // Make astronaut elements react to cursor
+        // Update astronaut positions
         const astronauts = document.querySelectorAll('.astronaut');
         astronauts.forEach(astronaut => {
-          // Move in the opposite direction of the cursor
+          // Move in the opposite direction of the cursor/tilt
           const moveX = (0.5 - x) * 10; // 10vw max movement
           const moveY = (0.5 - y) * 10; // 10vh max movement
           astronaut.style.transform = `translate(calc(-50% + ${moveX}vw), calc(-50% + ${moveY}vh))`;
         });
+      }
+      
+      // Mouse movement for desktop
+      document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        updateElementsPosition(x, y);
       });
+      
+      // Device orientation for mobile
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', (e) => {
+          // Beta is the front-to-back tilt in degrees, where front is positive
+          // Gamma is the left-to-right tilt in degrees, where right is positive
+          
+          // Normalize beta and gamma to values between 0 and 1
+          // Beta ranges from -180 to 180, we'll use -60 to 60 for better sensitivity
+          // Gamma ranges from -90 to 90, we'll use -45 to 45 for better sensitivity
+          const x = (e.gamma || 0) / 90 * 0.5 + 0.5; // Normalize to 0-1
+          const y = (e.beta || 0) / 180 * 0.5 + 0.5; // Normalize to 0-1
+          
+          // Clamp values between 0 and 1
+          const clampedX = Math.max(0, Math.min(1, x));
+          const clampedY = Math.max(0, Math.min(1, y));
+          
+          updateElementsPosition(clampedX, clampedY);
+        });
+      }
   </script>
 </body>
 </html>
