@@ -112,17 +112,34 @@
       html, body { font-size: 20px; }
       
       button {
-        font-size: 20px;
-        padding: 8px 16px;
+        font-size: 24px; /* Larger font size for better visibility */
+        padding: 10px 20px;
+        background: rgba(0,0,0,0.3); /* Semi-transparent background for better visibility */
+        border: 2px solid white; /* Thicker border */
+        z-index: 10; /* Ensure buttons are above other elements */
       }
       
       .section > button,
       .child-section > button {
-        bottom: 60px; /* Move buttons higher up on mobile */
+        bottom: 100px; /* Move buttons much higher up on mobile */
+        position: absolute;
+        width: 200px; /* Fixed width */
+        text-align: center;
       }
       
       h1, h2 {
-        margin-bottom: 80px; /* Add space below headings on mobile */
+        margin-bottom: 150px; /* More space below headings on mobile */
+        font-size: 36px; /* Larger headings */
+      }
+      
+      /* Adjust planet position to make more room for buttons */
+      .section .planet {
+        top: 40%; /* Move planet up slightly */
+      }
+      
+      /* Ensure astronaut doesn't overlap buttons */
+      .section .astronaut {
+        top: 40%; /* Move astronaut up slightly */
       }
     }
 
