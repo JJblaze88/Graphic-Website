@@ -1,332 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Horizontally & Vertically Scrolling Site</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amarante&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: sans-serif; overflow: hidden; }
-
+    html, body { height: 100%; font-family: 'Amarante', cursive; font-size: 30px; overflow: hidden; }
     .scroll-container { width: 100vw; height: 100vh; overflow: hidden; }
-    .wrapper {
-      display: flex;
-      width: 300vw;
-      height: 100vh;
-      transition: transform 0.6s ease;
-    }
+    .wrapper { display: flex; width: 300vw; height: 100vh; transition: transform 0.6s ease; }
 
     .section {
       flex: 0 0 100vw;
       height: 100vh;
       background-size: cover;
       background-position: center;
-      color: white;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      padding: 20px;
-      text-align: center;
+      color: white;
       overflow: hidden;
+      transition: background-position 0.6s ease;
     }
 
-    /* Planet styling and slow rotation */
+    /* Enlarged parent planet by 50% from 50vmin to 75vmin */
     .section .planet {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 50vmin;
-      height: 50vmin;
+      top: 50%; left: 50%;
+      width: 75vmin;
+      height: 75vmin;
       object-fit: contain;
       transform: translate(-50%, -50%);
       animation: rotate-center 60s linear infinite;
-      z-index: 5;
+      z-index: 1;
     }
-    
-    /* Modified planet positioning for child sections */
+
+    .section .astronaut {
+      position: absolute;
+      width: 87.5vmin;
+      height: 87.5vmin;
+      object-fit: contain;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+    }
+
+    /* Child planets remain unchanged */
     .child-section .planet {
       position: absolute;
-      bottom: -60vmin;       /* Lowered by additional 15% from -52vmin */
-      left: 50%; 
-      width: 96vmin;         /* Increased size by 20% from 80vmin */
-      height: 96vmin;        /* Increased size by 20% from 80vmin */
+      bottom: -84vmin;
+      left: 50%;
+      width: 106vmin;
+      height: 106vmin;
       object-fit: contain;
       transform: translateX(-50%);
       animation: rotate-bottom 60s linear infinite;
-      z-index: 5;
+      z-index: 1;
     }
 
     @keyframes rotate-center {
-      from { transform: translate(-50%, -50%) rotate(0deg); }
-      to   { transform: translate(-50%, -50%) rotate(360deg); }
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    
-    /* Updated animation for bottom-positioned planets */
     @keyframes rotate-bottom {
-      from { transform: translateX(-50%) rotate(0deg); }
-      to   { transform: translateX(-50%) rotate(360deg); }
+      0% { transform: translateX(-50%) rotate(0deg); }
+      100% { transform: translateX(-50%) rotate(360deg); }
     }
 
     .child-section {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
       flex-direction: column;
-      padding: 20px;
-      text-align: center;
-      opacity: 0;
-      pointer-events: none;
-      backdrop-filter: blur(0px);
-      transition: opacity 0.8s ease, backdrop-filter 0.8s ease;
-      z-index: 10;
-      overflow: hidden;
+      background-size: cover; background-position: center;
+      color: white; opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease; z-index: 2;
     }
-    
-    /* Button positioning for child sections */
-    .child-section .btn {
-      position: relative;
-      z-index: 20;
-      margin-top: 40px;
-      background: white;
-      color: black;
-      border: none;
-      padding: 12px 24px;
-      font-weight: bold;
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
-    
-    .child-section .btn:hover {
-      background: #f0f0f0;
-      transform: translateY(-2px);
-    }
-    
-    .child-section.active {
-      opacity: 1;
-      pointer-events: auto;
-      backdrop-filter: blur(10px);
-    }
+    .child-section.active { opacity: 1; pointer-events: auto; }
 
-    .btn, .about-btn-fixed {
-      margin-top: 20px;
+    button {
       padding: 10px 20px;
-      border: none;
-      background: white;
-      color: black;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    .about-btn-fixed {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
       background: transparent;
       border: 1px solid white;
       color: white;
+      cursor: pointer;
+      font-size: 30px;
+      font-family: 'Amarante', cursive;
+      transition: background 0.3s, transform 0.2s;
+      z-index: 3;
+    }
+    button:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+    /* Position Explore/Return buttons at bottom center */
+    .section > button,
+    .child-section > button {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 0;
     }
 
-    .explore-wrapper { position: absolute; bottom: 30px; }
-
+    .about-btn-fixed { position: fixed; top: 20px; right: 20px; z-index: 4; }
     .about-popup {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(10px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.8); z-index: 5;
     }
-
+    .about-popup.active { display: flex; }
     .about-content {
       background: rgba(255,255,255,0.05);
-      border: 2px solid rgba(255,255,255,0.2);
-      padding: 30px;
-      max-width: 500px;
+      padding: 30px; border: 1px solid rgba(255,255,255,0.2);
       color: white;
-      position: relative;
     }
 
-    .close-about {
-      position: absolute;
-      top: 10px; right: 15px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    /* Add smooth transition for background movement */
-    .section, .child-section {
-      background-size: cover;
-      background-position: center;
-      transition: background-position 0.6s ease;
-    }
-    
-    #page1, #child1 {
-      background-image: url('https://media.sellfy.store/images/Ym4XIvuc/wYmf/20250512_1003_Retro_Cosmic_Nebula_simple_compose_01jv1ra599emharc170he88ccb.png');
-    }
-    #page2, #child2 {
-      background-image: url('https://media.sellfy.store/images/Ym4XIvuc/0hV6/20250512_0959_Retro-Futuristic_Nebula_Canvas_simple_compose_01jv1r2gx2e02ss3fqfpm3h0ke.png');
-    }
-    #page3, #child3 {
-      background-image: url('https://media.sellfy.store/images/Ym4XIvuc/kITy/20250512_1014_Retro_Comic_Nebula_simple_compose_01jv1rwzbme9p8414ayv94v6yk.png');
-    }
-
-    @media (max-width: 768px) {
-      .btn { font-size: 0.9rem; padding: 8px 16px; }
-      .about-content { width: 90%; padding: 20px; }
-    }
+    #page1, #child1 { background-image: url('https://media.sellfy.store/images/Ym4XIvuc/wYmf/20250512_1003_Retro_Cosmic_Nebula_simple_compose_01jv1ra599emharc170he88ccb.png'); }
+    #page2, #child2 { background-image: url('https://media.sellfy.store/images/Ym4XIvuc/0hV6/20250512_0959_Retro-Futuristic_Nebula_Canvas_simple_compose_01jv1r2gx2e02ss3fqfpm3h0ke.png'); }
+    #page3, #child3 { background-image: url('https://media.sellfy.store/images/Ym4XIvuc/kITy/20250512_1014_Retro_Comic_Nebula_simple_compose_01jv1rwzbme9p8414ayv94v6yk.png'); }
   </style>
 </head>
 <body>
-
-  <button class="about-btn-fixed scramble-button" data-scramble="ABOUT">ABOUT</button>
-
+  <button class="about-btn-fixed" id="aboutBtn">ABOUT</button>
   <div class="scroll-container">
     <div class="wrapper" id="wrapper">
-
       <div class="section" id="page1">
-        <img src="https://media.sellfy.store/images/Ym4XIvuc/B3ve/20250503_1441_Retro-Futuristic_Planet_Art_simple_compose_01jtb2kksne3js1k25x5yw3rxx.png" alt="Planet 1" class="planet" />
+        <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/B3ve/20250503_1441_Retro-Futuristic_Planet_Art_simple_compose_01jtb2kksne3js1k25x5yw3rxx.png" alt="Planet 1">
         <h1>Page 1</h1>
-        <div class="explore-wrapper">
-          <button class="btn scramble-button" data-scramble="EXPLORE" onclick="showChild(1)">EXPLORE</button>
-        </div>
+        <img class="astronaut" src="https://media.sellfy.store/images/Ym4XIvuc/DO0a/20250512_0942_Retro_Astronaut_Illustration_simple_compose_01jv1q0mm7ejmrfv2cdknd4rxc.png" alt="Astronaut 1">
+        <button id="explore1">EXPLORE</button>
         <div class="child-section" id="child1">
-          <img src="https://media.sellfy.store/images/Ym4XIvuc/B3ve/20250503_1441_Retro-Futuristic_Planet_Art_simple_compose_01jtb2kksne3js1k25x5yw3rxx.png" class="planet" alt="Planet 4" />
+          <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/B3ve/20250503_1441_Retro-Futuristic_Planet_Art_simple_compose_01jtb2kksne3js1k25x5yw3rxx.png" alt="Planet Child 1">
           <h2>Page 4</h2>
-          <button class="btn scramble-button" data-scramble="RETURN" onclick="hideChild(1)">RETURN</button>
+          <button id="return1">RETURN</button>
         </div>
       </div>
-
       <div class="section" id="page2">
-        <img src="https://media.sellfy.store/images/Ym4XIvuc/tPvc/20250503_1437_Retro-Futuristic_Planet_Art_simple_compose_01jtb2cwj8fjmstgfdmng5ccnp.png" alt="Planet 2" class="planet" />
+        <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/tPvc/20250503_1437_Retro-Futuristic_Planet_Art_simple_compose_01jtb2cwj8fjmstgfdmng5ccnp.png" alt="Planet 2">
         <h1>Page 2</h1>
-        <div class="explore-wrapper">
-          <button class="btn scramble-button" data-scramble="EXPLORE" onclick="showChild(2)">EXPLORE</button>
-        </div>
+        <img class="astronaut" src="https://media.sellfy.store/images/Ym4XIvuc/inG0/20250512_0957_Retro_Space_Explorer_simple_compose_01jv1qwxaqfhk800zrcew5rfr6.png" alt="Astronaut 2">
+        <button id="explore2">EXPLORE</button>
         <div class="child-section" id="child2">
-          <img src="https://media.sellfy.store/images/Ym4XIvuc/tPvc/20250503_1437_Retro-Futuristic_Planet_Art_simple_compose_01jtb2cwj8fjmstgfdmng5ccnp.png" class="planet" alt="Planet 5" />
+          <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/tPvc/20250503_1437_Retro-Futuristic_Planet_Art_simple_compose_01jtb2cwj8fjmstgfdmng5ccnp.png" alt="Planet Child 2">
           <h2>Page 5</h2>
-          <button class="btn scramble-button" data-scramble="RETURN" onclick="hideChild(2)">RETURN</button>
+          <button id="return2">RETURN</button>
         </div>
       </div>
-
       <div class="section" id="page3">
-        <img src="https://media.sellfy.store/images/Ym4XIvuc/8sI1/20250503_1439_Retro-Futuristic_Planet_Illustration_simple_compose_01jtb2gegzf4ss893z3dp9tp2f.png" alt="Planet 3" class="planet" />
+        <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/8sI1/20250503_1439_Retro-Futuristic_Planet_Illustration_simple_compose_01jtb2gegzf4ss893z3dp9tp2f.png" alt="Planet 3">
         <h1>Page 3</h1>
-        <div class="explore-wrapper">
-          <button class="btn scramble-button" data-scramble="EXPLORE" onclick="showChild(3)">EXPLORE</button>
-        </div>
+        <img class="astronaut" src="https://media.sellfy.store/images/Ym4XIvuc/QY0o/20250512_0946_Retro_Astronaut_Illustration_simple_compose_01jv1q7tk8fe6v4ysjcfdym7sc.png" alt="Astronaut 3">
+        <button id="explore3">EXPLORE</button>
         <div class="child-section" id="child3">
-          <img src="https://media.sellfy.store/images/Ym4XIvuc/8sI1/20250503_1439_Retro-Futuristic_Planet_Illustration_simple_compose_01jtb2gegzf4ss893z3dp9tp2f.png" class="planet" alt="Planet 6" />
+          <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/8sI1/20250503_1439_Retro-Futuristic_Planet_Illustration_simple_compose_01jtb2gegzf4ss893z3dp9tp2f.png" alt="Planet Child 3">
           <h2>Page 6</h2>
-          <button class="btn scramble-button" data-scramble="RETURN" onclick="hideChild(3)">RETURN</button>
+          <button id="return3">RETURN</button>
         </div>
       </div>
-
     </div>
   </div>
-
   <div class="about-popup" id="aboutPopup">
     <div class="about-content">
-      <button class="close-about scramble-button" data-scramble="CLOSE" onclick="toggleAbout()">CLOSE</button>
+      <button id="closeAbout">CLOSE</button>
       <h2>About Us</h2>
       <p>This is a sample animated site with horizontal and vertical scroll, responsive backgrounds, and hover effects.</p>
     </div>
   </div>
-
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
+    // Function to scramble text
+    function scrambleText(text) {
+      const letters = text.split('');
+      for (let i = letters.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [letters[i], letters[j]] = [letters[j], letters[i]]; // Swap letters
+      }
+      return letters.join('');
+    }
+    
+    // Add scramble effect to all buttons - 4 scrambles before showing correct word
+    document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        const originalText = button.textContent;
+        let timeouts = [];
+        
+        button.addEventListener('mouseenter', () => {
+          // Scramble 4 times with 100ms between each scramble (faster)
+          for (let i = 0; i < 4; i++) {
+            timeouts.push(setTimeout(() => {
+              button.textContent = scrambleText(originalText);
+            }, i * 100));
+          }
+          
+          // Show original text after all scrambles
+          timeouts.push(setTimeout(() => {
+            button.textContent = originalText;
+          }, 4 * 100));
+        });
+        
+        button.addEventListener('mouseleave', () => {
+          // If mouse leaves before sequence is complete, clear all timeouts and restore text
+          timeouts.forEach(timeout => clearTimeout(timeout));
+          timeouts = [];
+          button.textContent = originalText;
+        });
+      });
+    });
+    
+    function showChild(n) {
+      const exploreBtn = document.getElementById(`explore${n}`);
+      if (exploreBtn) exploreBtn.style.display = 'none';
+      document.getElementById(`child${n}`).classList.add('active');
+      // Hide the parent astronaut when child page is active
+      const parentAstronaut = document.querySelector(`#page${n} .astronaut`);
+      if (parentAstronaut) parentAstronaut.style.display = 'none';
+    }
+    function hideChild(n) {
+      const exploreBtn = document.getElementById(`explore${n}`);
+      if (exploreBtn) exploreBtn.style.display = '';
+      document.getElementById(`child${n}`).classList.remove('active');
+      // Show the parent astronaut when child page is inactive
+      const parentAstronaut = document.querySelector(`#page${n} .astronaut`);
+      if (parentAstronaut) parentAstronaut.style.display = '';
+    }
+    function toggleAbout() {
+      document.getElementById('aboutPopup').classList.toggle('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
       const wrapper = document.getElementById('wrapper');
       let currentIndex = 0;
-
-      window.addEventListener('wheel', (e) => {
-        if (document.querySelector(`#child${currentIndex + 1}`)?.classList.contains('active')) return;
-        currentIndex = e.deltaY > 0 ? (currentIndex + 1) % 3 : (currentIndex - 1 + 3) % 3;
+      document.getElementById('explore1').onclick = () => showChild(1);
+      document.getElementById('explore2').onclick = () => showChild(2);
+      document.getElementById('explore3').onclick = () => showChild(3);
+      document.getElementById('return1').onclick = () => { hideChild(1); wrapper.style.transform = 'translateX(0)'; currentIndex = 0; };
+      document.getElementById('return2').onclick = () => { hideChild(2); wrapper.style.transform = 'translateX(-100vw)'; currentIndex = 1; };
+      document.getElementById('return3').onclick = () => { hideChild(3); wrapper.style.transform = 'translateX(-200vw)'; currentIndex = 2; };
+      document.getElementById('aboutBtn').onclick = toggleAbout;
+      document.getElementById('closeAbout').onclick = toggleAbout;
+      window.addEventListener('wheel', e => {
+        if (document.querySelector('.child-section.active')) return;
+        currentIndex = e.deltaY > 0 ? (currentIndex + 1) % 3 : (currentIndex + 2) % 3;
         wrapper.style.transform = `translateX(-${currentIndex * 100}vw)`;
       });
-
-      window.showChild = n => {
-        document.getElementById(`child${n}`).classList.add('active');
-      };
-      
-      window.hideChild = n => {
-        const childElement = document.getElementById(`child${n}`);
-        childElement.classList.remove('active');
-      };
-      
-      window.toggleAbout = () => {
-        const p = document.getElementById('aboutPopup');
-        p.style.display = p.style.display === 'flex' ? 'none' : 'flex';
-      };
-      document.querySelector('.about-btn-fixed').addEventListener('click', toggleAbout);
-
-      const scramble = word => [...Array(3)].map(_=>word.split('').sort(() => 0.5 - Math.random()).join('')).concat(word);
-      document.querySelectorAll('.scramble-button').forEach(btn => {
-        const w = btn.dataset.scramble;
-        btn.addEventListener('mouseenter', () => {
-          let i = 0;
-          const steps = scramble(w);
-          const t = setInterval(() => { btn.textContent = steps[i++]; if(i >= steps.length) clearInterval(t); }, 100);
-        });
-        btn.addEventListener('mouseleave', () => { btn.textContent = btn.dataset.scramble; });
-      });
-
-      // Improved smooth background parallax effect
-      document.querySelectorAll('.section, .child-section').forEach(section => {
-        let bgX = 50;
-        let bgY = 50;
-        let targetX = 50;
-        let targetY = 50;
-        
-        // Use requestAnimationFrame for smoother animation
-        function updateBackground() {
-          // Smooth lerp (linear interpolation) for background movement
-          bgX += (targetX - bgX) * 0.05;
-          bgY += (targetY - bgY) * 0.05;
-          
-          section.style.backgroundPosition = `${bgX}% ${bgY}%`;
-          requestAnimationFrame(updateBackground);
-        }
-        
-        updateBackground();
-        
-        section.addEventListener('mousemove', e => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          // Calculate mouse position as percentage of section dimensions
-          const mouseX = (e.clientX - rect.left) / rect.width;
-          const mouseY = (e.clientY - rect.top) / rect.height;
-          
-          // Adjust target position with reduced movement factor (3% instead of 10%)
-          targetX = 50 - (mouseX - 0.5) * 30;
-          targetY = 50 - (mouseY - 0.5) * 30;
-        });
-        
-        // Reset position when mouse leaves
-        section.addEventListener('mouseleave', () => {
-          targetX = 50;
-          targetY = 50;
-        });
-      });
-
-      let sX = 0, eX = 0;
-      document.addEventListener('touchstart', e => sX = e.changedTouches[0].screenX);
-      document.addEventListener('touchend', e => { eX = e.changedTouches[0].screenX; const d = eX - sX; if (Math.abs(d) > 50) { currentIndex = d < 0 ? (currentIndex + 1) % 3 : (currentIndex - 1 + 3) % 3; wrapper.style.transform = `translateX(-${currentIndex * 100}vw)`; } });
     });
+
+      document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+          section.style.backgroundPosition = `${50 + (1 - x) * 25}% ${50 + (1 - y) * 25}%`;
+        });
+
+        const childSections = document.querySelectorAll('.child-section');
+        childSections.forEach(childSection => {
+          childSection.style.backgroundPosition = `${50 + (1 - x) * 25}% ${50 + (1 - y) * 25}%`;
+        });
+        
+        // Make astronaut elements react to cursor
+        const astronauts = document.querySelectorAll('.astronaut');
+        astronauts.forEach(astronaut => {
+          // Move in the opposite direction of the cursor
+          const moveX = (0.5 - x) * 10; // 10vw max movement
+          const moveY = (0.5 - y) * 10; // 10vh max movement
+          astronaut.style.transform = `translate(calc(-50% + ${moveX}vw), calc(-50% + ${moveY}vh))`;
+        });
+      });
   </script>
 </body>
 </html>
