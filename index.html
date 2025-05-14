@@ -56,16 +56,16 @@
       position: absolute;
       width: 100%;
       height: 400px;
-      top: 45%;
+      top: AUTO;
       transform: translateY(-50%);
       z-index: 2;
       overflow: hidden;
+      white-space: nowrap;
     }
     
-    .text-banner {
+    .text-banner-container::before {
+      content: "OUR SERVICES";
       position: absolute;
-      width: max-content;
-      white-space: nowrap;
       color: white;
       font-family: 'Amarante', cursive;
       font-size: 400px;
@@ -73,13 +73,27 @@
       animation: scrollText 25s linear infinite;
     }
     
-    .text-banner.second {
-      animation-delay: 10s; /* Half the animation duration */
-    }
-
     @keyframes scrollText {
       0% { transform: translateX(100vw); }
-      100% { transform: translateX(-300vw); }
+      49% { transform: translateX(-100%); }
+      50% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    /* Hide the original text banners */
+    .text-banner {
+      display: none;
+    }
+    
+    /* Responsive text banner for mobile */
+    @media (max-width: 768px) {
+      .text-banner-container {
+        height: 200px;
+      }
+      
+      .text-banner-container::before {
+        font-size: 200px;
+      }
     }
 
     /* Child planets remain unchanged */
