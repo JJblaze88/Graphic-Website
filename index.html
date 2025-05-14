@@ -27,6 +27,11 @@
       overflow: hidden;
       transition: background-position 0.6s ease;
     }
+    
+    /* Add transitions for headings */
+    .section h1, .child-section h2 {
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
 
     /* Enlarged parent planet by 50% from 50vmin to 75vmin */
     .section .planet {
@@ -63,8 +68,34 @@
       white-space: nowrap;
     }
     
+    /* Remove the generic ::before content */
     .text-banner-container::before {
+      content: none;
+    }
+    
+    /* Add page-specific banners */
+    #page1 .text-banner-container::before {
       content: "OUR SERVICES";
+      position: absolute;
+      color: white;
+      font-family: 'Amarante', cursive;
+      font-size: 400px;
+      text-align: center;
+      animation: scrollText 25s linear infinite;
+    }
+    
+    #page2 .text-banner-container::before {
+      content: "OUR WORK";
+      position: absolute;
+      color: white;
+      font-family: 'Amarante', cursive;
+      font-size: 400px;
+      text-align: center;
+      animation: scrollText 25s linear infinite;
+    }
+    
+    #page3 .text-banner-container::before {
+      content: "OUR PRICING";
       position: absolute;
       color: white;
       font-family: 'Amarante', cursive;
@@ -75,8 +106,6 @@
     
     @keyframes scrollText {
       0% { transform: translateX(100vw); }
-      49% { transform: translateX(-100%); }
-      50% { transform: translateX(100vw); }
       100% { transform: translateX(-100%); }
     }
     
@@ -91,7 +120,9 @@
         height: 200px;
       }
       
-      .text-banner-container::before {
+      #page1 .text-banner-container::before,
+      #page2 .text-banner-container::before,
+      #page3 .text-banner-container::before {
         font-size: 200px;
       }
     }
@@ -125,9 +156,15 @@
       flex-direction: column;
       background-size: cover; background-position: center;
       color: white; opacity: 0; pointer-events: none;
-      transition: opacity 0.4s ease; z-index: 2;
+      transition: opacity 0.8s ease, transform 0.8s ease; 
+      z-index: 2;
+      transform: scale(1.1);
     }
-    .child-section.active { opacity: 1; pointer-events: auto; }
+    .child-section.active { 
+      opacity: 1; 
+      pointer-events: auto; 
+      transform: scale(1);
+    }
 
     button {
       padding: 10px 20px;
@@ -229,6 +266,10 @@
       <div class="section" id="page2">
         <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/tPvc/20250503_1437_Retro-Futuristic_Planet_Art_simple_compose_01jtb2cwj8fjmstgfdmng5ccnp.png" alt="Planet 2">
         <h1>Page 2</h1>
+        <div class="text-banner-container">
+          <div class="text-banner">OUR WORK</div>
+          <div class="text-banner second">OUR WORK</div>
+        </div>
         <img class="astronaut" src="https://media.sellfy.store/images/Ym4XIvuc/inG0/20250512_0957_Retro_Space_Explorer_simple_compose_01jv1qwxaqfhk800zrcew5rfr6.png" alt="Astronaut 2">
         <button id="explore2">EXPLORE</button>
         <div class="child-section" id="child2">
@@ -240,6 +281,10 @@
       <div class="section" id="page3">
         <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/8sI1/20250503_1439_Retro-Futuristic_Planet_Illustration_simple_compose_01jtb2gegzf4ss893z3dp9tp2f.png" alt="Planet 3">
         <h1>Page 3</h1>
+        <div class="text-banner-container">
+          <div class="text-banner">OUR PRICING</div>
+          <div class="text-banner second">OUR PRICING</div>
+        </div>
         <img class="astronaut" src="https://media.sellfy.store/images/Ym4XIvuc/QY0o/20250512_0946_Retro_Astronaut_Illustration_simple_compose_01jv1q7tk8fe6v4ysjcfdym7sc.png" alt="Astronaut 3">
         <button id="explore3">EXPLORE</button>
         <div class="child-section" id="child3">
@@ -300,19 +345,120 @@
     
     function showChild(n) {
       const exploreBtn = document.getElementById(`explore${n}`);
-      if (exploreBtn) exploreBtn.style.display = 'none';
-      document.getElementById(`child${n}`).classList.add('active');
-      // Hide the parent astronaut when child page is active
+      const parentSection = document.getElementById(`page${n}`);
+      const childSection = document.getElementById(`child${n}`);
       const parentAstronaut = document.querySelector(`#page${n} .astronaut`);
-      if (parentAstronaut) parentAstronaut.style.display = 'none';
+      const parentPlanet = document.querySelector(`#page${n} .planet`);
+      const textBanner = document.querySelector(`#page${n} .text-banner-container`);
+      const parentHeading = document.querySelector(`#page${n} h1`);
+      const childHeading = document.querySelector(`#child${n} h2`);
+      
+      // Fade out parent elements
+      if (exploreBtn) {
+        exploreBtn.style.transition = 'opacity 0.4s ease';
+        exploreBtn.style.opacity = '0';
+        setTimeout(() => { exploreBtn.style.display = 'none'; }, 400);
+      }
+      
+      if (parentAstronaut) {
+        parentAstronaut.style.transition = 'opacity 0.6s ease, transform 0.8s ease';
+        parentAstronaut.style.opacity = '0';
+        parentAstronaut.style.transform = 'translate(-50%, -60%) scale(0.9)';
+      }
+      
+      if (parentPlanet) {
+        parentPlanet.style.transition = 'opacity 0.8s ease, transform 1s ease';
+        parentPlanet.style.opacity = '0.3';
+      }
+      
+      if (textBanner) {
+        textBanner.style.transition = 'opacity 0.4s ease';
+        textBanner.style.opacity = '0';
+      }
+      
+      if (parentHeading) {
+        parentHeading.style.transition = 'opacity 0.4s ease, transform 0.5s ease';
+        parentHeading.style.opacity = '0';
+        parentHeading.style.transform = 'translateY(-20px)';
+      }
+      
+      // Prepare child heading for fade in
+      if (childHeading) {
+        childHeading.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        childHeading.style.opacity = '0';
+        childHeading.style.transform = 'translateY(20px)';
+      }
+      
+      // Activate child section with slight delay
+      setTimeout(() => {
+        childSection.classList.add('active');
+        
+        // Fade in child heading
+        if (childHeading) {
+          setTimeout(() => {
+            childHeading.style.opacity = '1';
+            childHeading.style.transform = 'translateY(0)';
+          }, 200);
+        }
+      }, 200);
     }
+    
     function hideChild(n) {
       const exploreBtn = document.getElementById(`explore${n}`);
-      if (exploreBtn) exploreBtn.style.display = '';
-      document.getElementById(`child${n}`).classList.remove('active');
-      // Show the parent astronaut when child page is inactive
+      const parentSection = document.getElementById(`page${n}`);
+      const childSection = document.getElementById(`child${n}`);
       const parentAstronaut = document.querySelector(`#page${n} .astronaut`);
-      if (parentAstronaut) parentAstronaut.style.display = '';
+      const parentPlanet = document.querySelector(`#page${n} .planet`);
+      const textBanner = document.querySelector(`#page${n} .text-banner-container`);
+      const parentHeading = document.querySelector(`#page${n} h1`);
+      const childHeading = document.querySelector(`#child${n} h2`);
+      
+      // Fade out child heading first
+      if (childHeading) {
+        childHeading.style.opacity = '0';
+        childHeading.style.transform = 'translateY(20px)';
+      }
+      
+      // Start transition back to parent after a short delay
+      setTimeout(() => {
+        childSection.classList.remove('active');
+      }, 100);
+      
+      // Restore parent elements with delays
+      setTimeout(() => {
+        if (parentPlanet) {
+          parentPlanet.style.transition = 'opacity 0.8s ease, transform 1s ease';
+          parentPlanet.style.opacity = '1';
+        }
+        
+        if (textBanner) {
+          textBanner.style.transition = 'opacity 0.8s ease';
+          textBanner.style.opacity = '1';
+        }
+        
+        if (parentHeading) {
+          parentHeading.style.transition = 'opacity 0.8s ease, transform 0.6s ease';
+          parentHeading.style.opacity = '1';
+          parentHeading.style.transform = 'translateY(0)';
+        }
+      }, 200);
+      
+      setTimeout(() => {
+        if (parentAstronaut) {
+          parentAstronaut.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+          parentAstronaut.style.opacity = '1';
+          parentAstronaut.style.transform = 'translate(-50%, -50%)';
+          parentAstronaut.style.display = '';
+        }
+        
+        if (exploreBtn) {
+          exploreBtn.style.display = '';
+          setTimeout(() => {
+            exploreBtn.style.transition = 'opacity 0.4s ease';
+            exploreBtn.style.opacity = '1';
+          }, 50);
+        }
+      }, 400);
     }
     function toggleAbout() {
       document.getElementById('aboutPopup').classList.toggle('active');
@@ -328,9 +474,27 @@
       document.getElementById('explore1').onclick = () => showChild(1);
       document.getElementById('explore2').onclick = () => showChild(2);
       document.getElementById('explore3').onclick = () => showChild(3);
-      document.getElementById('return1').onclick = () => { hideChild(1); wrapper.style.transform = 'translateX(0)'; currentIndex = 0; };
-      document.getElementById('return2').onclick = () => { hideChild(2); wrapper.style.transform = 'translateX(-100vw)'; currentIndex = 1; };
-      document.getElementById('return3').onclick = () => { hideChild(3); wrapper.style.transform = 'translateX(-200vw)'; currentIndex = 2; };
+      document.getElementById('return1').onclick = () => { 
+        hideChild(1); 
+        setTimeout(() => {
+          wrapper.style.transform = 'translateX(0)'; 
+          currentIndex = 0; 
+        }, 400);
+      };
+      document.getElementById('return2').onclick = () => { 
+        hideChild(2); 
+        setTimeout(() => {
+          wrapper.style.transform = 'translateX(-100vw)'; 
+          currentIndex = 1; 
+        }, 400);
+      };
+      document.getElementById('return3').onclick = () => { 
+        hideChild(3); 
+        setTimeout(() => {
+          wrapper.style.transform = 'translateX(-200vw)'; 
+          currentIndex = 2; 
+        }, 400);
+      };
       document.getElementById('aboutBtn').onclick = toggleAbout;
       document.getElementById('closeAbout').onclick = toggleAbout;
       
