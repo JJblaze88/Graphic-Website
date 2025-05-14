@@ -51,6 +51,37 @@
       z-index: 3;
     }
 
+    /* Text banner styles */
+    .text-banner-container {
+      position: absolute;
+      width: 100%;
+      height: 400px;
+      top: 45%;
+      transform: translateY(-50%);
+      z-index: 2;
+      overflow: hidden;
+    }
+    
+    .text-banner {
+      position: absolute;
+      width: max-content;
+      white-space: nowrap;
+      color: white;
+      font-family: 'Amarante', cursive;
+      font-size: 400px;
+      text-align: center;
+      animation: scrollText 25s linear infinite;
+    }
+    
+    .text-banner.second {
+      animation-delay: 10s; /* Half the animation duration */
+    }
+
+    @keyframes scrollText {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-300vw); }
+    }
+
     /* Child planets remain unchanged */
     .child-section .planet {
       position: absolute;
@@ -169,6 +200,10 @@
       <div class="section" id="page1">
         <img class="planet" src="https://media.sellfy.store/images/Ym4XIvuc/B3ve/20250503_1441_Retro-Futuristic_Planet_Art_simple_compose_01jtb2kksne3js1k25x5yw3rxx.png" alt="Planet 1">
         <h1>Page 1</h1>
+        <div class="text-banner-container">
+          <div class="text-banner">OUR SERVICES</div>
+          <div class="text-banner second">OUR SERVICES</div>
+        </div>
         <img class="astronaut" src="https://media.sellfy.store/images/Ym4XIvuc/DO0a/20250512_0942_Retro_Astronaut_Illustration_simple_compose_01jv1q0mm7ejmrfv2cdknd4rxc.png" alt="Astronaut 1">
         <button id="explore1">EXPLORE</button>
         <div class="child-section" id="child1">
