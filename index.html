@@ -582,25 +582,23 @@
         updateElementsPosition(x, y);
       });
       
-      // Device orientation for mobile
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', (e) => {
-          // Beta is the front-to-back tilt in degrees, where front is positive
-          // Gamma is the left-to-right tilt in degrees, where right is positive
-          
-          // Normalize beta and gamma to values between 0 and 1
-          // Beta ranges from -180 to 180, we'll use -60 to 60 for better sensitivity
-          // Gamma ranges from -90 to 90, we'll use -45 to 45 for better sensitivity
-          const x = (e.gamma || 0) / 90 * 0.5 + 0.5; // Normalize to 0-1
-          const y = (e.beta || 0) / 180 * 0.5 + 0.5; // Normalize to 0-1
-          
-          // Clamp values between 0 and 1
-          const clampedX = Math.max(0, Math.min(1, x));
-          const clampedY = Math.max(0, Math.min(1, y));
-          
-          updateElementsPosition(clampedX, clampedY);
-        });
-      }
+// Device orientation for mobile
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', (e) => {
+    // Use narrower ranges for better sensitivity as mentioned in your comments
+    // Beta (front-to-back tilt) - use -60 to 60 degrees range
+    // Gamma (left-to-right tilt) - use -45 to 45 degrees range
+    
+    const x = (Math.max(-45, Math.min(45, e.gamma || 0)) + 45) / 90;
+    const y = (Math.max(-60, Math.min(60, e.beta || 0)) + 60) / 120;
+    
+    // No need for additional clamping since our ranges already limit values
+    updateElementsPosition(x, y);
+  });
+} else {
+  console.log("Device orientation not supported on this device");
+  // Fallback behavior could be implemented here (e.g., mouse movement)
+}
   </script>
 </body>
 </html>
